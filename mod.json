@@ -8,7 +8,7 @@
 	},
 	"id": "rifct.friend_badges",
 	"name": "Friend Badges",
-	"version": "v1.0.1",
+	"version": "v1.0.2",
 	"developer": "Rifct",
 	"description": "Adds friend indicators.",
 	"dependencies": {
