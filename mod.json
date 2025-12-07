@@ -1,0 +1,17 @@
+{
+	"geode": "4.9.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "rifct.friend_badges",
+	"name": "Friend Badges",
+	"version": "v1.0.0",
+	"developer": "Rifct",
+	"description": "Adds friend indicators.",
+	"dependencies": {
+		"geode.node-ids": ">=1.21.0"
+	}
+}
