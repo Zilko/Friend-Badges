@@ -5,6 +5,7 @@
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/GJLevelScoreCell.hpp>
 #include <Geode/modify/CommentCell.hpp>
+#include <Geode/modify/FriendsProfilePage.hpp>
 
 using namespace geode::prelude;
 
@@ -13,12 +14,10 @@ static bool g_userListLoaded = false;
 
 class $modify(MenuLayer) {
     
-    struct Fields {
-        EventListener<web::WebTask> m_listener;
-    };
-    
     bool init() {
         if (!MenuLayer::init()) return false;
+        
+        if (g_userListLoaded) return true;
         
         auto accountManager = GJAccountManager::sharedState();
         int accountID = accountManager->m_accountID;
@@ -37,7 +36,8 @@ class $modify(MenuLayer) {
         
         std::string url = "http://www.boomlings.com/database/getGJUserList20.php";
         
-        m_fields->m_listener.bind([] (web::WebTask::Event* e) {
+        auto listener = new EventListener<web::WebTask>;
+        listener->bind([] (web::WebTask::Event* e) {
             if (web::WebResponse* value = e->getValue()) {
                 std::string response = value->string().unwrapOr("");
 
@@ -63,7 +63,7 @@ class $modify(MenuLayer) {
             }
         });
         
-        m_fields->m_listener.setFilter(req.post(url));
+        listener->setFilter(req.post(url));
         
         return true;
     }
@@ -121,6 +121,23 @@ class $modify(MyCommentCell, CommentCell) {
                     }
                 }
             }
+        }
+    }
+};
+
+class $modify(FriendsProfilePage) {
+    
+    void getUserListFinished(cocos2d::CCArray* users, UserListType type) {
+        FriendsProfilePage::getUserListFinished(users, type);
+        
+        if (type == UserListType::Friends && users) {
+            g_userList.clear();
+            
+            for (auto userScore : CCArrayExt<GJUserScore*>(users)) {
+                g_userList.insert(userScore->m_accountID);
+            }
+            
+            g_userListLoaded = true;
         }
     }
 };
